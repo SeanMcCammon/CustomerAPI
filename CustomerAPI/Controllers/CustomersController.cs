@@ -66,7 +66,7 @@ namespace CustomerAPI
         [HttpPost("addcustomer")]
         public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
         {
-            if (!ValidateEmail(customer.EMail))
+            if (!string.IsNullOrEmpty(customer.EMail) && !ValidateEmail(customer.EMail))
             {
                 // Bad request if email does not match requirements
                 return BadRequest();
