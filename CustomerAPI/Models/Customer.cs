@@ -17,6 +17,7 @@ namespace CustomerAPI.Models
         [Required]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "The First Name is required to be between 3 - 50 characters in length. ")]
         public string FirstName { get; set; }
+        [RegularExpression(@"[A-Z]{2}[-][0-9]{6}", ErrorMessage = "Format of Policy is Incorrect. Required to be in format XX-999999.")]
         public string Policy { get; set; }
         [EmailAddress]
         public string EMail { get; set; }

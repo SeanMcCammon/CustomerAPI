@@ -63,7 +63,10 @@ namespace CustomerAPI
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCustomer", new {id = customer.Id}, customer);
+
+
+            //return Ok();
         }
 
         private bool CustomerExists(long id)
