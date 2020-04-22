@@ -72,13 +72,20 @@ namespace CustomerAPI
                 return BadRequest();
             }
 
+            // If a DOBis passed in - validate it
+            if (customer.DOB != null)
+            {
+                // If not over 18 return a bad request
+                if (!ValidateAge(customer.DOB))
+                {
+                    return BadRequest();
+                }
+            }
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCustomer", new {id = customer.Id}, customer);
-
-
-            //return Ok();
         }
 
         /// <summary>
@@ -93,6 +100,27 @@ namespace CustomerAPI
             var isValidEmail = Regex.Match(emailAddress, regExValidateString);
 
             return isValidEmail.Success;
+        }
+
+        /// <summary>
+        /// Simple method to check the DateTime past in against todays date time and validate age
+        /// of customer is over 18 years. 
+        /// </summary>
+        /// <param name="dob"></param>
+        /// <returns></returns>
+        private bool ValidateAge(DateTime dob)
+        {
+            bool validDOB = false;
+            DateTime todayDateTime = DateTime.Today;
+
+            TimeSpan differenSpan = todayDateTime.Subtract(dob);
+
+            double yearOld = differenSpan.TotalDays / 365;
+
+            if (yearOld > 18)
+                validDOB = true;
+
+            return validDOB;
         }
 
         private bool CustomerExists(long id)
