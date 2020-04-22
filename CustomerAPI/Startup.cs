@@ -51,7 +51,7 @@ namespace CustomerAPI
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustoemrUI API V1"); });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomerUI API V1"); });
 
             app.UseHttpsRedirection();
 
