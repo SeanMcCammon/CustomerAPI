@@ -25,12 +25,27 @@ namespace CustomerAPI
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
+            //return await _context.Customers.ToListAsync();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Returns a list of all existing customers
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ViewAllCustomers")]
+        public async Task<ActionResult<IEnumerable<Customer>>> ViewAllCustomers()
+        {
             return await _context.Customers.ToListAsync();
         }
 
-        // GET: api/Customers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(long id)
+        /// <summary>
+        /// Method to allow retrieval and viewing of a customer details
+        /// </summary>
+        /// <param name="id">Id of the customer to retrieve details of</param>
+        /// <returns></returns>
+        [HttpGet("ViewCustomerDetails")]
+        public async Task<ActionResult<Customer>> ViewCustomerDetails(long id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -42,20 +57,50 @@ namespace CustomerAPI
             return customer;
         }
 
-        // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(long id)
+        /// <summary>
+        /// Method to allow deletion of a customer - if we are required to do so
+        /// </summary>
+        /// <param name="id">Id of cutomer to delete</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteCustomer")]
+        public async Task<ActionResult<Customer>> DeleteCustomer(Customer customer)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            Customer customerToDelete = await _context.Customers.FindAsync(customer.Id);
+            if (customerToDelete == null)
             {
                 return NotFound();
             }
 
-            _context.Customers.Remove(customer);
+            _context.Customers.Remove(customerToDelete);
             await _context.SaveChangesAsync();
 
             return customer;
+        }
+
+        /// <summary>
+        /// Called if required to update details of a customer- name maybe incorrect
+        /// </summary>
+        /// <param name="customer">Customer details with updates</param>
+        /// <returns></returns>
+        [HttpPost("UpdateCustomer")]
+        public async Task<ActionResult<Customer>> UpdateCustomer(Customer customer)
+        {
+            Customer customerToUpdate = await _context.Customers.FindAsync(customer.Id);
+
+            if (customerToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            customerToUpdate.Surname = customer.Surname;
+            customerToUpdate.FirstName = customer.FirstName;
+            customerToUpdate.Policy = customer.Policy;
+            customerToUpdate.EMail = customer.EMail;
+            customerToUpdate.DOB = customer.DOB;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         /// <summary>
@@ -63,7 +108,7 @@ namespace CustomerAPI
         /// </summary>
         /// <param name="customer">Customer details to record</param>
         /// <returns>Return code for either good or bad action</returns>
-        [HttpPost("addcustomer")]
+        [HttpPost("AddCustomer")]
         public async Task<ActionResult<Customer>> AddCustomer(Customer customer)
         {
             if (!string.IsNullOrEmpty(customer.EMail) && !ValidateEmail(customer.EMail))
@@ -85,7 +130,11 @@ namespace CustomerAPI
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new {id = customer.Id}, customer);
+            //Return just the customer Id as per spec
+            return CreatedAtAction("AddCustomer", new { id = customer.Id }, customer.Id);
+
+            //Below return would return entire customer data including the customer ID if spcification changed after meeting
+            //return CreatedAtAction("AddCustomer", new {id = customer.Id}, customer);
         }
 
         /// <summary>
@@ -123,6 +172,11 @@ namespace CustomerAPI
             return validDOB;
         }
 
+        /// <summary>
+        /// Customer Exists validation on Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool CustomerExists(long id)
         {
             return _context.Customers.Any(e => e.Id == id);
