@@ -26,6 +26,8 @@ namespace CustomerAPI
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
             //return await _context.Customers.ToListAsync();
+            // Currently have this endpoint to easy my testing. This allows me to run up, it returns a 200. Then I can 
+            // continue my testing using postman.
             return Ok();
         }
 
