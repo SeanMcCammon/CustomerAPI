@@ -168,7 +168,7 @@ namespace CustomerAPI
 
             double yearOld = differenSpan.TotalDays / 365;
 
-            if (yearOld > 18)
+            if (yearOld >= 18)
                 validDOB = true;
 
             return validDOB;
