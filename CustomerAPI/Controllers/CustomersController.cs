@@ -44,18 +44,18 @@ namespace CustomerAPI
         /// </summary>
         /// <param name="id">Id of the customer to retrieve details of</param>
         /// <returns></returns>
-        [HttpGet("ViewCustomerDetails")]
-        public async Task<ActionResult<Customer>> ViewCustomerDetails(long id)
-        {
-            var customer = await _context.Customers.FindAsync(id);
+        //[HttpGet("ViewCustomerDetails")]
+        //public async Task<ActionResult<Customer>> ViewCustomerDetails(long id)
+        //{
+        //    Customer customer = await _context.Customers.FindAsync(id);
 
-            if (customer == null)
-            {
-                return NotFound();
-            }
+        //    if (customer == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return customer;
-        }
+        //    return customer;
+        //}
 
         /// <summary>
         /// Method to allow deletion of a customer - if we are required to do so
