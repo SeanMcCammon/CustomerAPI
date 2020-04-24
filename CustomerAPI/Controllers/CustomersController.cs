@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CustomerAPI.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CustomerAPI
 {
@@ -15,10 +16,12 @@ namespace CustomerAPI
     public class CustomersController : ControllerBase
     {
         private readonly CustomerDbContext _context;
+        private readonly ILogger _logger;
 
-        public CustomersController(CustomerDbContext context)
+        public CustomersController(CustomerDbContext context, ILogger<CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Customers
@@ -70,6 +73,7 @@ namespace CustomerAPI
             Customer customerToDelete = await _context.Customers.FindAsync(customer.Id);
             if (customerToDelete == null)
             {
+                _logger.LogError("Error deleting customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return NotFound();
             }
 
@@ -91,6 +95,7 @@ namespace CustomerAPI
 
             if (customerToUpdate == null)
             {
+                _logger.LogError("Error updating customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return NotFound();
             }
 
@@ -116,6 +121,7 @@ namespace CustomerAPI
             if (!string.IsNullOrEmpty(customer.EMail) && !ValidateEmail(customer.EMail))
             {
                 // Bad request if email does not match requirements
+                _logger.LogError("Not valid email format for customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return BadRequest();
             }
 
@@ -125,6 +131,7 @@ namespace CustomerAPI
                 // If not over 18 return a bad request
                 if (!ValidateAge(customer.DOB))
                 {
+                    _logger.LogError("Customer not of age - Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                     return BadRequest();
                 }
             }
