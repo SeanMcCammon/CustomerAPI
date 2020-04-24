@@ -73,7 +73,7 @@ namespace CustomerAPI
             Customer customerToDelete = await _context.Customers.FindAsync(customer.Id);
             if (customerToDelete == null)
             {
-                _logger.LogError("Error deleting customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
+                _logger.LogWarning("Error deleting customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return NotFound();
             }
 
@@ -95,7 +95,7 @@ namespace CustomerAPI
 
             if (customerToUpdate == null)
             {
-                _logger.LogError("Error updating customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
+                _logger.LogWarning("Error updating customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return NotFound();
             }
 
@@ -121,7 +121,7 @@ namespace CustomerAPI
             if (!string.IsNullOrEmpty(customer.EMail) && !ValidateEmail(customer.EMail))
             {
                 // Bad request if email does not match requirements
-                _logger.LogError("Not valid email format for customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
+                _logger.LogWarning("Not valid email format for customer Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                 return BadRequest();
             }
 
@@ -131,7 +131,7 @@ namespace CustomerAPI
                 // If not over 18 return a bad request
                 if (!ValidateAge(customer.DOB))
                 {
-                    _logger.LogError("Customer not of age - Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
+                    _logger.LogWarning("Customer not of age - Id " + customer.Id + " : " + customer.FirstName + " " + customer.Surname);
                     return BadRequest();
                 }
             }
